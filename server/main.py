@@ -3,12 +3,12 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 
-app = FastAPI()
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 DATA_FILE = Path("static/daily_item.json")
 DAILY_DATA = {}
+
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 try: 
     if DATA_FILE.exists():
         with open(DATA_FILE, mode='r', encoding='utf-8') as f:
@@ -23,7 +23,6 @@ except  Exception as e:
 async def get_daily_item():
     if not DAILY_DATA:
         raise HTTPException(status_code=404, detail="Pas d'item")
-    
     return {
         "title": DAILY_DATA.get("title"),
         "images": DAILY_DATA.get("image_url"),
@@ -35,12 +34,10 @@ async def get_daily_item():
 async def check_price(guess: float):
     if not DAILY_DATA or "price" not in DAILY_DATA:
         raise HTTPException(status_code=500, detail="Prix non configuré sur le serveur")
-    
     try:
         actual_price = float(DAILY_DATA.get("price"))
     except ValueError:
         raise HTTPException(status_code=500, detail="Prix mal formaté sur le serveur")
-    
     if guess < actual_price:
         return {"result": "LOW"}
     elif guess > actual_price:

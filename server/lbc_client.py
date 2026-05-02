@@ -15,7 +15,6 @@ def get_item_from_lbc():
         ad_type=lbc.AdType.OFFER
     )
     item = random.choice(results.ads)
-
     return {
         "title": item.title,
         "price": item.price,
@@ -25,5 +24,3 @@ def get_item_from_lbc():
         "location": item.location.city if item.location else "N/A",
         "id": item.id
     }
-
-print(get_item_from_lbc())
